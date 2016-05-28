@@ -24,7 +24,6 @@ export class PartiesForm extends MeteorComponent {
 			location: ['', Validators.required],
             'public': [false]
 		});
-		console.log(this.user);
 	}
 
 	addParty(party) {

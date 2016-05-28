@@ -3,6 +3,7 @@ import { RouteParams, RouterLink, CanActivate, ComponentInstruction } from '@ang
 import {Parties} from '../../../collections/parties.ts';
 import { Meteor } from 'meteor/meteor';
 import { RequireUser } from 'angular2-meteor-accounts-ui';
+import { MeteorComponent } from 'angular2-meteor';
  
 function checkPermissions(instruction: ComponentInstruction) {
   var partyId = instruction.params['partyId'];
@@ -16,12 +17,15 @@ function checkPermissions(instruction: ComponentInstruction) {
   directives: [RouterLink]
 })
 @CanActivate(checkPermissions)
-export class PartyDetails {
+export class PartyDetails extends MeteorComponent {
   party: Party;
   
   constructor(params: RouteParams) {
+    super();
     var partyId = params.get('partyId');
-    this.party = Parties.findOne(partyId);
+    this.subscribe('party', partyId, () => {
+      this.party = Parties.findOne(partyId);
+    }, true);
   }
   saveParty(party) {
 	  if (Meteor.userId()) {
