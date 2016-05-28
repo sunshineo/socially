@@ -1,0 +1,7 @@
+{
+  "galaxy.meteor.com": { 
+     "env": { 
+       "MONGO_URL": "mongodb://socially:socially@ds019053.mlab.com:19053/socially"
+     }
+   }
+}
