@@ -27,7 +27,6 @@ export class PartiesForm extends MeteorComponent {
 	}
 
 	addParty(party) {
-		console.log(this.user);
 		if (Meteor.userId()) {
 			Parties.insert({
 				name: party.name,
