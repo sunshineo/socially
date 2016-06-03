@@ -7,20 +7,12 @@ import { MeteorComponent } from 'angular2-meteor';
 import { Mongo } from 'meteor/mongo';
 import { DisplayName } from '../pipes/pipes.ts';
 
- 
-function checkPermissions(instruction: ComponentInstruction) {
-  var partyId = instruction.params['partyId'];
-  var party = Parties.findOne(partyId);
-  return (party && party.owner == Meteor.userId());
-}
-
 @Component({
   selector: 'party-details',
   templateUrl: 'client/imports/party-details/party-details.html',
   directives: [RouterLink],
   pipes: [DisplayName]
 })
-@CanActivate(checkPermissions)
 export class PartyDetails extends MeteorComponent {
   party: Party;
   users: Mongo.Cursor<Object>;
@@ -31,9 +23,7 @@ export class PartyDetails extends MeteorComponent {
     var partyId = params.get('partyId');
     console.log(partyId);
     this.subscribe('party', partyId, () => {
-      console.log("here11");
       this.autorun(() => {
-        console.log("here22");
         this.party = Parties.findOne(partyId);
         this.getUsers(this.party);
       },   true);
@@ -43,9 +33,7 @@ export class PartyDetails extends MeteorComponent {
     }, true);
   }
   getUsers(party: Party) {
-    console.log("here1");
     if (this.party) {
-      console.log("here2");
       this.users = Meteor.users.find({
         _id: {
           $nin: party.invited || [],
@@ -75,6 +63,16 @@ export class PartyDetails extends MeteorComponent {
       }
  
       alert('User successfully invited.');
+    });
+  }
+  reply(rsvp: string) {
+    this.call('reply', this.party._id, rsvp, (error) => {
+      if (error) {
+        alert(`Failed to reply due to ${error}`);
+      }
+      else {
+        alert('You successfully replied.');
+      }
     });
   }
 }
